@@ -85,7 +85,7 @@ function GridItem< Item >( {
 	const instanceId = useInstanceId( GridItem );
 	const isSelected = selection.includes( id );
 	const renderedMediaField = mediaField?.render ? (
-		<mediaField.render item={ item } field={ mediaField } />
+		<mediaField.render item={ item } field={ mediaField } view={ view } />
 	) : null;
 	const renderedTitleField =
 		showTitle && titleField?.render ? (
