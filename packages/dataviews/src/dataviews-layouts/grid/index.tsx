@@ -37,7 +37,6 @@ import type {
 } from '../../types';
 import type { SetSelection } from '../../private-types';
 import { ItemClickWrapper } from '../utils/item-click-wrapper';
-import { useUpdatedPreviewSizeOnViewportChange } from './preview-size-picker';
 const { Badge } = unlock( componentsPrivateApis );
 
 interface GridItemProps< Item > {
@@ -287,23 +286,21 @@ function ViewGrid< Item >( {
 		{ regularFields: [], badgeFields: [] }
 	);
 	const hasData = !! data?.length;
-	const updatedPreviewSize = useUpdatedPreviewSizeOnViewportChange();
 	const hasBulkActions = useSomeItemHasAPossibleBulkAction( actions, data );
-	const usedPreviewSize = updatedPreviewSize || view.layout?.previewSize;
+	const usedPreviewSize = view.layout?.previewSize;
 	const gridStyle = usedPreviewSize
 		? {
-				gridTemplateColumns: `repeat(${ usedPreviewSize }, minmax(0, 1fr))`,
+				gridTemplateColumns: `repeat(auto-fill, minmax(${ usedPreviewSize }px, 1fr))`,
 		  }
 		: {};
 
 	// Calculate possible media sizes in grid for responsive images.
 	let sizes = '400px';
 	if ( usedPreviewSize ) {
-		// Mobile size is always 100vw.
-		// Sizes smaller than 782px don't show the sidebar.
-		// The default calculation uses 400px as sidebar + grid padding.
-		// These are rough numbers so grid gap isn't included.
-		sizes = `${ 100 / usedPreviewSize }vw`;
+		// The max size the image can be is slightly less than twice its min size.
+		// Any bigger than that and the grid will start to show two images side by side.
+		// Sizes only needs a rough number so we don't count paddings and grid gap.
+		sizes = `${ usedPreviewSize * 2 }px`;
 	}
 	return (
 		<>
