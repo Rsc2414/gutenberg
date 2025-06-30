@@ -7,8 +7,6 @@ import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { __experimentalSanitizeBlockAttributes } from '@wordpress/blocks';
 
-const EMPTY_OBJECT = {};
-
 export function rendererPath( block, attributes = null, urlQueryArgs = {} ) {
 	return addQueryArgs( `/wp/v2/block-renderer/${ block }`, {
 		context: 'edit',
@@ -30,7 +28,7 @@ export function removeBlockSupportAttributes( attributes ) {
 	} = attributes;
 
 	const { border, color, elements, spacing, typography, ...restStyles } =
-		attributes?.style || EMPTY_OBJECT;
+		attributes?.style || {};
 
 	return {
 		...restAttributes,
@@ -79,9 +77,11 @@ export function useServerSideRender( args ) {
 						path,
 						method: isPostRequest ? 'POST' : 'GET',
 						body,
-						headers: {
-							'Content-Type': 'application/json',
-						},
+						headers: isPostRequest
+							? {
+									'Content-Type': 'application/json',
+							  }
+							: {},
 						signal: controller.signal,
 					} )
 						.then( ( res ) => {

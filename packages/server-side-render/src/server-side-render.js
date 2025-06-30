@@ -82,7 +82,7 @@ export default function ServerSideRender( props ) {
 	if ( status === 'loading' ) {
 		return (
 			<LoadingResponsePlaceholder { ...props }>
-				{ prevHTMLtRef.current && (
+				{ !! prevHTMLtRef.current && (
 					<RawHTML className={ className }>
 						{ prevHTMLtRef.current }
 					</RawHTML>
