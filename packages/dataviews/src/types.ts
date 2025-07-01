@@ -623,6 +623,9 @@ export interface ViewListProps< Item > extends ViewBaseProps< Item > {
 
 export interface ViewGridProps< Item > extends ViewBaseProps< Item > {
 	view: ViewGrid;
+	containerRef?:
+		| ( ( element?: HTMLDivElement | null ) => void )
+		| React.RefObject< HTMLDivElement >;
 }
 
 export type ViewProps< Item > =

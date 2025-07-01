@@ -3,12 +3,15 @@
  */
 import clsx from 'clsx';
 import type { ComponentProps, ReactElement } from 'react';
+/**
+ * WordPress dependencies
+ */
+import { useContext } from '@wordpress/element';
 
 /**
  * WordPress dependencies
  */
 import {
-	__experimentalGrid as Grid,
 	__experimentalHStack as HStack,
 	__experimentalVStack as VStack,
 	Spinner,
@@ -38,6 +41,7 @@ import type {
 import type { SetSelection } from '../../private-types';
 import { ItemClickWrapper } from '../utils/item-click-wrapper';
 const { Badge } = unlock( componentsPrivateApis );
+import DataViewsContext from '../../components/dataviews-context';
 
 interface GridItemProps< Item > {
 	view: ViewGridType;
@@ -256,6 +260,7 @@ function ViewGrid< Item >( {
 	view,
 	className,
 }: ViewGridProps< Item > ) {
+	const { containerRef } = useContext( DataViewsContext );
 	const titleField = fields.find(
 		( field ) => field.id === view?.titleField
 	);
@@ -288,11 +293,6 @@ function ViewGrid< Item >( {
 	const hasData = !! data?.length;
 	const hasBulkActions = useSomeItemHasAPossibleBulkAction( actions, data );
 	const usedPreviewSize = view.layout?.previewSize;
-	const gridStyle = usedPreviewSize
-		? {
-				gridTemplateColumns: `repeat(auto-fill, minmax(${ usedPreviewSize }px, 1fr))`,
-		  }
-		: {};
 
 	// Calculate possible media sizes in grid for responsive images.
 	let sizes = '400px';
@@ -305,13 +305,15 @@ function ViewGrid< Item >( {
 	return (
 		<>
 			{ hasData && (
-				<Grid
-					gap={ 8 }
-					columns={ 2 }
-					alignment="top"
+				<div
 					className={ clsx( 'dataviews-view-grid', className ) }
-					style={ gridStyle }
+					style={ {
+						gridTemplateColumns:
+							usedPreviewSize &&
+							`repeat(auto-fill, minmax(${ usedPreviewSize }px, 1fr))`,
+					} }
 					aria-busy={ isLoading }
+					ref={ containerRef }
 				>
 					{ data.map( ( item ) => {
 						return (
@@ -336,7 +338,7 @@ function ViewGrid< Item >( {
 							/>
 						);
 					} ) }
-				</Grid>
+				</div>
 			) }
 			{ ! hasData && (
 				<div

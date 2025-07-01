@@ -11,16 +11,49 @@ import { useContext } from '@wordpress/element';
 import DataViewsContext from '../../components/dataviews-context';
 import type { ViewGrid } from '../../types';
 
-const MIN_IMG_SIZE = 230;
-const MAX_IMG_SIZE = 430;
+const imageSizes = [
+	{
+		value: 230,
+		breakpoint: 1,
+	},
+	{
+		value: 290,
+		breakpoint: 1112, // at minimum image width, 4 images display at this container size
+	},
+	{
+		value: 350,
+		breakpoint: 1636, // at minimum image width, 6 images display at this container size
+	},
+	{
+		value: 430,
+		breakpoint: 588, // at minimum image width, 2 images display at this container size
+	},
+];
 
 export default function PreviewSizePicker() {
 	const context = useContext( DataViewsContext );
 	const view = context.view as ViewGrid;
-	if ( context.containerWidth < MIN_IMG_SIZE * 2 + 128 ) {
+
+	if ( context.containerWidth < 588 ) {
 		return null;
 	}
-	const previewSizeToUse = view.layout?.previewSize ?? 230;
+
+	const breakValues = imageSizes.filter( ( size ) => {
+		return context.containerWidth >= size.breakpoint;
+	} );
+
+	const previewSizeToUse = view.layout?.previewSize
+		? breakValues.findIndex(
+				( size ) => size.value === view.layout?.previewSize
+		  )
+		: 0;
+
+	const marks = breakValues.map( ( size, index ) => {
+		return {
+			value: index,
+		};
+	} );
+
 	return (
 		<RangeControl
 			__nextHasNoMarginBottom
@@ -28,18 +61,20 @@ export default function PreviewSizePicker() {
 			showTooltip={ false }
 			label={ __( 'Preview size' ) }
 			value={ previewSizeToUse }
-			min={ MIN_IMG_SIZE }
-			max={ MAX_IMG_SIZE }
+			min={ 0 }
+			max={ breakValues.length - 1 }
 			withInputField={ false }
-			onChange={ ( value = 230 ) => {
+			onChange={ ( value = 0 ) => {
 				context.onChangeView( {
 					...view,
 					layout: {
 						...view.layout,
-						previewSize: value,
+						previewSize: breakValues[ value ].value,
 					},
 				} );
 			} }
+			step={ 1 }
+			marks={ marks }
 		/>
 	);
 }
