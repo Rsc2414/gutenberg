@@ -37,7 +37,7 @@ add_action(
 
 					return sprintf(
 						'<p>Coffee count: %d</p>',
-						$count,
+						$count
 					);
 				},
 				'editor_script_handles' => array( 'server-side-rendered-block' ),
