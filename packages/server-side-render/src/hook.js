@@ -61,6 +61,7 @@ export function removeBlockSupportAttributes( attributes ) {
  * Basic usage:
  *
  * ```jsx
+ * import { RawHTML } from '@wordpress/element';
  * import { useServerSideRender } from '@wordpress/server-side-render';
  *
  * function MyServerSideRender( { attributes, block } ) {
@@ -77,7 +78,7 @@ export function removeBlockSupportAttributes( attributes ) {
  *     return <div>Error: { error }</div>;
  *   }
  *
- *   return <div dangerouslySetInnerHTML={ { __html: html } } />;
+ *   return <RawHTML>{ html }</RawHTML>;
  * }
  * ```
  *
