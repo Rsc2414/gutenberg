@@ -36,6 +36,53 @@ export function removeBlockSupportAttributes( attributes ) {
 	};
 }
 
+/**
+ * @typedef {Object} ServerSideRenderResponse
+ * @property {string} status  - The current request status: 'idle', 'loading', 'success', or 'error'.
+ * @property {string} [html]  - The rendered HTML content (available when status is 'success').
+ * @property {string} [error] - The error message (available when status is 'error').
+ */
+
+/**
+ * A hook for server-side rendering a preview of dynamic blocks to display in the editor.
+ *
+ * Handles fetching server-rendered previews for blocks, managing loading states,
+ * and automatically debouncing requests to prevent excessive API calls. It supports both
+ * GET and POST requests, with POST requests used for larger attribute payloads.
+ *
+ * @param {Object}  args                                    - The hook configuration object.
+ * @param {Object}  args.attributes                         - The block attributes to be sent to the server for rendering.
+ * @param {string}  args.block                              - The identifier of the block to be server-side rendered. Example: 'core/archives'.
+ * @param {boolean} [args.skipBlockSupportAttributes=false] - Whether to remove block support attributes before sending.
+ * @param {string}  [args.httpMethod='GET']                 - The HTTP method to use ('GET' or 'POST'). Default is 'GET'.
+ * @param {Object}  [args.urlQueryArgs]                     - Additional query arguments to append to the request URL.
+ *
+ * @example
+ * Basic usage:
+ *
+ * ```jsx
+ * import { useServerSideRender } from '@wordpress/server-side-render';
+ *
+ * function MyServerSideRender( { attributes, block } ) {
+ *   const { status, html, error } = useServerSideRender( {
+ *     attributes,
+ *     block,
+ *   } );
+ *
+ *   if ( status === 'loading' ) {
+ *     return <div>Loading...</div>;
+ *   }
+ *
+ *   if ( status === 'error' ) {
+ *     return <div>Error: { error }</div>;
+ *   }
+ *
+ *   return <div dangerouslySetInnerHTML={ { __html: html } } />;
+ * }
+ * ```
+ *
+ * @return {ServerSideRenderResponse} The server-side render response object.
+ */
 export function useServerSideRender( args ) {
 	const [ response, setResponse ] = useState( { status: 'idle' } );
 	const shouldDebounceRef = useRef( false );
