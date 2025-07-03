@@ -47,7 +47,7 @@ function ColumnPrimary< Item >( {
 					<mediaField.render
 						item={ item }
 						field={ mediaField }
-						sizes="32px"
+						mediaAppearance={ { maxImageWidth: '32px' } }
 					/>
 				</div>
 			) }

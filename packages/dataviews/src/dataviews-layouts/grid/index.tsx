@@ -60,7 +60,9 @@ interface GridItemProps< Item > {
 	regularFields: NormalizedField< Item >[];
 	badgeFields: NormalizedField< Item >[];
 	hasBulkActions: boolean;
-	sizes: string;
+	mediaAppearance: {
+		maxImageWidth: string;
+	};
 }
 
 function GridItem< Item >( {
@@ -79,7 +81,7 @@ function GridItem< Item >( {
 	regularFields,
 	badgeFields,
 	hasBulkActions,
-	sizes,
+	mediaAppearance,
 }: GridItemProps< Item > ) {
 	const { showTitle = true, showMedia = true, showDescription = true } = view;
 	const hasBulkAction = useHasAPossibleBulkAction( actions, item );
@@ -87,7 +89,11 @@ function GridItem< Item >( {
 	const instanceId = useInstanceId( GridItem );
 	const isSelected = selection.includes( id );
 	const renderedMediaField = mediaField?.render ? (
-		<mediaField.render item={ item } field={ mediaField } sizes={ sizes } />
+		<mediaField.render
+			item={ item }
+			field={ mediaField }
+			mediaAppearance={ mediaAppearance }
+		/>
 	) : null;
 	const renderedTitleField =
 		showTitle && titleField?.render ? (
@@ -291,14 +297,9 @@ function ViewGrid< Item >( {
 	const hasBulkActions = useSomeItemHasAPossibleBulkAction( actions, data );
 	const usedPreviewSize = view.layout?.previewSize;
 
-	// Calculate possible media sizes in grid for responsive images.
-	let sizes = '400px';
-	if ( usedPreviewSize ) {
-		// The max size the image can be is slightly less than twice its min size.
-		// Any bigger than that and the grid will start to show two images side by side.
-		// Sizes only needs a rough number so we don't count paddings and grid gap.
-		sizes = `${ usedPreviewSize * 2 }px`;
-	}
+	// This is the maximum width that an image can achieve in the grid.
+	const maxImageWidth = '900px';
+
 	return (
 		<>
 			{ hasData && (
@@ -331,7 +332,9 @@ function ViewGrid< Item >( {
 								regularFields={ regularFields }
 								badgeFields={ badgeFields }
 								hasBulkActions={ hasBulkActions }
-								sizes={ sizes }
+								mediaAppearance={ {
+									maxImageWidth,
+								} }
 							/>
 						);
 					} ) }

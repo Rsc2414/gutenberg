@@ -279,7 +279,9 @@ export type DataFormControlProps< Item > = {
 export type DataViewRenderFieldProps< Item > = {
 	item: Item;
 	field: NormalizedField< Item >;
-	sizes?: string;
+	mediaAppearance?: {
+		maxImageWidth: string;
+	};
 };
 
 /**

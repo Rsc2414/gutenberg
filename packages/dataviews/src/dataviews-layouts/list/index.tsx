@@ -202,7 +202,7 @@ function ListItem< Item >( {
 				<mediaField.render
 					item={ item }
 					field={ mediaField }
-					sizes="52px"
+					mediaAppearance={ { maxImageWidth: '52px' } }
 				/>
 			</div>
 		) : null;
