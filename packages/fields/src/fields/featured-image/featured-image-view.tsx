@@ -12,7 +12,7 @@ import type { BasePost } from '../../types';
 
 export const FeaturedImageView = ( {
 	item,
-	mediaAppearance,
+	config,
 }: DataViewRenderFieldProps< BasePost > ) => {
 	const mediaId = item.featured_media;
 
@@ -42,7 +42,7 @@ export const FeaturedImageView = ( {
 								.join( ', ' )
 						: undefined
 				}
-				sizes={ mediaAppearance?.maxImageWidth || '100vw' }
+				sizes={ config?.size || '100vw' }
 			/>
 		);
 	}

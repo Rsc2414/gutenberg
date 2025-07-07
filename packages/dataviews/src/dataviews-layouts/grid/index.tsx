@@ -60,8 +60,8 @@ interface GridItemProps< Item > {
 	regularFields: NormalizedField< Item >[];
 	badgeFields: NormalizedField< Item >[];
 	hasBulkActions: boolean;
-	mediaAppearance: {
-		maxImageWidth: string;
+	config: {
+		size: string;
 	};
 }
 
@@ -81,7 +81,7 @@ function GridItem< Item >( {
 	regularFields,
 	badgeFields,
 	hasBulkActions,
-	mediaAppearance,
+	config,
 }: GridItemProps< Item > ) {
 	const { showTitle = true, showMedia = true, showDescription = true } = view;
 	const hasBulkAction = useHasAPossibleBulkAction( actions, item );
@@ -92,7 +92,7 @@ function GridItem< Item >( {
 		<mediaField.render
 			item={ item }
 			field={ mediaField }
-			mediaAppearance={ mediaAppearance }
+			config={ config }
 		/>
 	) : null;
 	const renderedTitleField =
@@ -298,7 +298,7 @@ function ViewGrid< Item >( {
 	const usedPreviewSize = view.layout?.previewSize;
 
 	// This is the maximum width that an image can achieve in the grid.
-	const maxImageWidth = '900px';
+	const size = '900px';
 
 	return (
 		<>
@@ -332,8 +332,8 @@ function ViewGrid< Item >( {
 								regularFields={ regularFields }
 								badgeFields={ badgeFields }
 								hasBulkActions={ hasBulkActions }
-								mediaAppearance={ {
-									maxImageWidth,
+								config={ {
+									size,
 								} }
 							/>
 						);
