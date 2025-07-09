@@ -1,14 +1,23 @@
 /**
  * WordPress dependencies
  */
-import { RawHTML, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	RawHTML,
+	useEffect,
+	useState,
+	useRef,
+	useMemo,
+} from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Placeholder, Spinner } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { useServerSideRender } from './hook';
+
+const EMPTY_OBJECT = {};
 
 function DefaultEmptyResponsePlaceholder( { className } ) {
 	return (
@@ -60,7 +69,7 @@ function DefaultLoadingResponsePlaceholder( { children } ) {
 	);
 }
 
-export default function ServerSideRender( props ) {
+export function ServerSideRender( props ) {
 	const prevHTMLtRef = useRef( '' );
 	const {
 		className,
@@ -100,4 +109,34 @@ export default function ServerSideRender( props ) {
 	}
 
 	return <RawHTML className={ className }>{ html }</RawHTML>;
+}
+
+export function ServerSideRenderWithPostId( {
+	urlQueryArgs = EMPTY_OBJECT,
+	...props
+} ) {
+	const currentPostId = useSelect( ( select ) => {
+		// FIXME: @wordpress/server-side-render should not depend on @wordpress/editor.
+		// It is used by blocks that can be loaded into a *non-post* block editor.
+		// eslint-disable-next-line @wordpress/data-no-store-string-literals
+		const postId = select( 'core/editor' )?.getCurrentPostId();
+
+		// For templates and template parts we use a custom ID format.
+		// Since they aren't real posts, we don't want to use their ID
+		// for server-side rendering. Since they use a string based ID,
+		// we can assume real post IDs are numbers.
+		return postId && typeof postId === 'number' ? postId : null;
+	}, [] );
+
+	const newUrlQueryArgs = useMemo( () => {
+		if ( ! currentPostId ) {
+			return urlQueryArgs;
+		}
+		return {
+			post_id: currentPostId,
+			...urlQueryArgs,
+		};
+	}, [ currentPostId, urlQueryArgs ] );
+
+	return <ServerSideRender urlQueryArgs={ newUrlQueryArgs } { ...props } />;
 }
