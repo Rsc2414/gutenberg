@@ -27,7 +27,8 @@
 - Add `label-position-side` classes to labels in the form field layouts. Ensure that labels in the panel view do not align center, and that all side labels are center aligned.
 - Allow readonly fields in DataForm when `readOnly` is set to `true`.
 - Adjust the padding when the component is placed inside a `Card`.
-- Introduce `perPageSizes` to control the available sizes of the items per page
+- Introduce `perPageSizes` to control the available sizes of the items per page.
+- Align media styles in table view with list view for consistency.
 
 ### Breaking Changes
 
