@@ -361,6 +361,8 @@ export const GroupedGridLayout = () => {
 			actions={ actions }
 			defaultLayouts={ {
 				[ LAYOUT_GRID ]: {},
+				[ LAYOUT_LIST ]: {},
+				[ LAYOUT_TABLE ]: {},
 			} }
 		/>
 	);
