@@ -418,6 +418,11 @@ interface ViewBase {
 	 * Whether to show the hierarchical levels.
 	 */
 	showLevels?: boolean;
+
+	/**
+	 * The field to group by.
+	 */
+	groupByField?: string;
 }
 
 export interface ColumnStyle {

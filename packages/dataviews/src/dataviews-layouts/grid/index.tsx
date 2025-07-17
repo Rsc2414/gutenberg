@@ -293,40 +293,134 @@ function ViewGrid< Item >( {
 				gridTemplateColumns: `repeat(${ usedPreviewSize }, minmax(0, 1fr))`,
 		  }
 		: {};
+
+	// Group data by groupByField if specified
+	const groupedData = view.groupByField
+		? data.reduce( ( groups: { [ key: string ]: typeof data }, item ) => {
+				const groupField = fields.find(
+					( f ) => f.id === view.groupByField
+				);
+				const groupValue = groupField?.getValue
+					? groupField.getValue( { item } )
+					: ( item as any )[ view.groupByField! ];
+				const key = String( groupValue ?? __( 'No group' ) );
+				if ( ! groups[ key ] ) {
+					groups[ key ] = [];
+				}
+				groups[ key ].push( item );
+				return groups;
+		  }, {} )
+		: null;
+
 	return (
 		<>
 			{ hasData && (
-				<Grid
-					gap={ 8 }
-					columns={ 2 }
-					alignment="top"
-					className={ clsx( 'dataviews-view-grid', className ) }
-					style={ gridStyle }
-					aria-busy={ isLoading }
-				>
-					{ data.map( ( item ) => {
-						return (
-							<GridItem
-								key={ getItemId( item ) }
-								view={ view }
-								selection={ selection }
-								onChangeSelection={ onChangeSelection }
-								onClickItem={ onClickItem }
-								isItemClickable={ isItemClickable }
-								renderItemLink={ renderItemLink }
-								getItemId={ getItemId }
-								item={ item }
-								actions={ actions }
-								mediaField={ mediaField }
-								titleField={ titleField }
-								descriptionField={ descriptionField }
-								regularFields={ regularFields }
-								badgeFields={ badgeFields }
-								hasBulkActions={ hasBulkActions }
-							/>
-						);
-					} ) }
-				</Grid>
+				<>
+					{ groupedData ? (
+						<VStack spacing={ 4 }>
+							{ Object.entries( groupedData ).map(
+								( [ groupName, groupItems ] ) => (
+									<VStack key={ groupName } spacing={ 2 }>
+										<h3 className="dataviews-view-grid__group-header">
+											{ groupName }
+										</h3>
+										<Grid
+											gap={ 8 }
+											columns={ 2 }
+											alignment="top"
+											className={ clsx(
+												'dataviews-view-grid',
+												className
+											) }
+											style={ gridStyle }
+											aria-busy={ isLoading }
+										>
+											{ groupItems.map( ( item ) => {
+												return (
+													<GridItem
+														key={ getItemId(
+															item
+														) }
+														view={ view }
+														selection={ selection }
+														onChangeSelection={
+															onChangeSelection
+														}
+														onClickItem={
+															onClickItem
+														}
+														isItemClickable={
+															isItemClickable
+														}
+														renderItemLink={
+															renderItemLink
+														}
+														getItemId={ getItemId }
+														item={ item }
+														actions={ actions }
+														mediaField={
+															mediaField
+														}
+														titleField={
+															titleField
+														}
+														descriptionField={
+															descriptionField
+														}
+														regularFields={
+															regularFields
+														}
+														badgeFields={
+															badgeFields
+														}
+														hasBulkActions={
+															hasBulkActions
+														}
+													/>
+												);
+											} ) }
+										</Grid>
+									</VStack>
+								)
+							) }
+						</VStack>
+					) : (
+						<Grid
+							gap={ 8 }
+							columns={ 2 }
+							alignment="top"
+							className={ clsx(
+								'dataviews-view-grid',
+								className
+							) }
+							style={ gridStyle }
+							aria-busy={ isLoading }
+						>
+							{ data.map( ( item ) => {
+								return (
+									<GridItem
+										key={ getItemId( item ) }
+										view={ view }
+										selection={ selection }
+										onChangeSelection={ onChangeSelection }
+										onClickItem={ onClickItem }
+										isItemClickable={ isItemClickable }
+										renderItemLink={ renderItemLink }
+										getItemId={ getItemId }
+										item={ item }
+										actions={ actions }
+										mediaField={ mediaField }
+										titleField={ titleField }
+										descriptionField={ descriptionField }
+										regularFields={ regularFields }
+										badgeFields={ badgeFields }
+										hasBulkActions={ hasBulkActions }
+									/>
+								);
+							} ) }
+						</Grid>
+					) }
+				</>
 			) }
 			{ ! hasData && (
 				<div
