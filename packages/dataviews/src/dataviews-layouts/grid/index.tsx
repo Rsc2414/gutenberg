@@ -295,11 +295,11 @@ function ViewGrid< Item >( {
 		: {};
 
 	// Group data by sort.field if sort.grouped is true
+	const groupField = view.sort?.grouped
+		? fields.find( ( f ) => f.id === view.sort?.field )
+		: null;
 	const groupedData = view.sort?.grouped
 		? data.reduce( ( groups: { [ key: string ]: typeof data }, item ) => {
-				const groupField = fields.find(
-					( f ) => f.id === view.sort?.field
-				);
 				const groupValue = groupField?.getValue
 					? groupField.getValue( { item } )
 					: ( item as any )[ view.sort?.field! ];
@@ -322,7 +322,7 @@ function ViewGrid< Item >( {
 								( [ groupName, groupItems ] ) => (
 									<VStack key={ groupName } spacing={ 2 }>
 										<h3 className="dataviews-view-grid__group-header">
-											{ groupName }
+											{ groupField?.label }: { groupName }
 										</h3>
 										<Grid
 											gap={ 8 }
