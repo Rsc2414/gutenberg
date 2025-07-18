@@ -110,6 +110,12 @@ export const processBlockType =
 			null
 		);
 
+		if ( settings.apiVersion <= 2 ) {
+			warning(
+				'Block API version is less than 2. This means that the post editor may be rendered outside the iframe. Since all editors are planned to work as iframes in the future, set the `apiVersion` field to 3 and test the block inside the iframe editor. See: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/#version-3-wordpress-6-3'
+			);
+		}
+
 		if (
 			settings.description &&
 			typeof settings.description !== 'string'
