@@ -338,11 +338,7 @@ export const GroupedGridLayout = () => {
 		titleField: 'title',
 		descriptionField: 'description',
 		mediaField: 'image',
-		sort: {
-			field: 'type',
-			direction: 'asc',
-			grouped: true,
-		},
+		groupByField: 'type',
 		layout: {
 			badgeFields: [ 'satellites' ],
 		},

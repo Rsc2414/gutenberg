@@ -148,9 +148,6 @@ function SortFieldControl() {
 					sort: {
 						direction: view?.sort?.direction || 'desc',
 						field: value,
-						...( view?.sort?.grouped && {
-							grouped: view.sort.grouped,
-						} ),
 					},
 					showLevels: false,
 				} );
@@ -194,9 +191,6 @@ function SortDirectionControl() {
 									( field ) => field.enableSorting !== false
 								)?.id ||
 								'',
-							...( view?.sort?.grouped && {
-								grouped: view.sort.grouped,
-							} ),
 						},
 						showLevels: false,
 					} );

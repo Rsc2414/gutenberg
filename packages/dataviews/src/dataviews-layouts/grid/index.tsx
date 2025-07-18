@@ -294,15 +294,16 @@ function ViewGrid< Item >( {
 		  }
 		: {};
 
-	// Group data by sort.field if sort.grouped is true
-	const groupField = view.sort?.grouped
-		? fields.find( ( f ) => f.id === view.sort?.field )
+	const groupField = view.groupByField
+		? fields.find( ( f ) => f.id === view.groupByField )
 		: null;
-	const groupedData = view.sort?.grouped
+
+	// Group data by groupByField if specified
+	const groupedData = view.groupByField
 		? data.reduce( ( groups: { [ key: string ]: typeof data }, item ) => {
 				const groupValue = groupField?.getValue
 					? groupField.getValue( { item } )
-					: ( item as any )[ view.sort?.field! ];
+					: ( item as any )[ view.groupByField! ];
 				const key = String( groupValue ?? __( 'No group' ) );
 				if ( ! groups[ key ] ) {
 					groups[ key ] = [];

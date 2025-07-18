@@ -143,12 +143,6 @@ const _HeaderMenu = forwardRef( function HeaderMenu< Item >(
 													sort: {
 														field: fieldId,
 														direction,
-														...( view?.sort
-															?.grouped && {
-															grouped:
-																view.sort
-																	.grouped,
-														} ),
 													},
 													showLevels: false,
 												} );
