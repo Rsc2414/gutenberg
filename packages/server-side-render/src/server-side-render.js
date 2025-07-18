@@ -111,6 +111,43 @@ export function ServerSideRender( props ) {
 	return <RawHTML className={ className }>{ html }</RawHTML>;
 }
 
+/**
+ * A component that renders server-side content for blocks.
+ *
+ * Note: URL query will include the current post ID when applicable.
+ * This is useful for blocks that depend on the context of the current post for rendering.
+ *
+ * @example
+ * ```jsx
+ * import { ServerSideRender } from '@wordpress/server-side-render';
+ * // Legacy import for WordPress 6.8 and earlier
+ * // import { default as ServerSideRender } from '@wordpress/server-side-render';
+ *
+ * function Example() {
+ *   return (
+ *     <ServerSideRender
+ *       block="core/archives"
+ *       attributes={ { showPostCounts: true } }
+ *       urlQueryArgs={ { customArg: 'value' } }
+ *       className="custom-class"
+ *     />
+ *   );
+ * }
+ * ```
+ *
+ * @param {Object}   props                                    Component props.
+ * @param {string}   props.block                              The identifier of the block to be serverside rendered.
+ * @param {Object}   props.attributes                         The block attributes to be sent to the server for rendering.
+ * @param {string}   [props.className]                        Additional classes to apply to the wrapper element.
+ * @param {string}   [props.httpMethod='GET']                 The HTTP method to use ('GET' or 'POST'). Default is 'GET'
+ * @param {Object}   [props.urlQueryArgs]                     Additional query arguments to append to the request URL.
+ * @param {boolean}  [props.skipBlockSupportAttributes=false] Whether to remove block support attributes before sending.
+ * @param {Function} [props.EmptyResponsePlaceholder]         Component rendered when the API response is empty.
+ * @param {Function} [props.ErrorResponsePlaceholder]         Component rendered when the API response is an error.
+ * @param {Function} [props.LoadingResponsePlaceholder]       Component rendered while the API request is loading.
+ *
+ * @return {JSX.Element} The rendered server-side content.
+ */
 export function ServerSideRenderWithPostId( {
 	urlQueryArgs = EMPTY_OBJECT,
 	...props

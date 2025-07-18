@@ -50,13 +50,6 @@ export function removeBlockSupportAttributes( attributes ) {
  * and automatically debouncing requests to prevent excessive API calls. It supports both
  * GET and POST requests, with POST requests used for larger attribute payloads.
  *
- * @param {Object}  args                                    - The hook configuration object.
- * @param {Object}  args.attributes                         - The block attributes to be sent to the server for rendering.
- * @param {string}  args.block                              - The identifier of the block to be server-side rendered. Example: 'core/archives'.
- * @param {boolean} [args.skipBlockSupportAttributes=false] - Whether to remove block support attributes before sending.
- * @param {string}  [args.httpMethod='GET']                 - The HTTP method to use ('GET' or 'POST'). Default is 'GET'.
- * @param {Object}  [args.urlQueryArgs]                     - Additional query arguments to append to the request URL.
- *
  * @example
  * Basic usage:
  *
@@ -81,6 +74,13 @@ export function removeBlockSupportAttributes( attributes ) {
  *   return <RawHTML>{ html }</RawHTML>;
  * }
  * ```
+ *
+ * @param {Object}  args                                    The hook configuration object.
+ * @param {Object}  args.attributes                         The block attributes to be sent to the server for rendering.
+ * @param {string}  args.block                              The identifier of the block to be serverside rendered. Example: 'core/archives'.
+ * @param {boolean} [args.skipBlockSupportAttributes=false] Whether to remove block support attributes before sending.
+ * @param {string}  [args.httpMethod='GET']                 The HTTP method to use ('GET' or 'POST'). Default is 'GET'.
+ * @param {Object}  [args.urlQueryArgs]                     Additional query arguments to append to the request URL.
  *
  * @return {ServerSideRenderResponse} The server-side render response object.
  */
