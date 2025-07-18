@@ -70,7 +70,7 @@ function DefaultLoadingResponsePlaceholder( { children } ) {
 }
 
 export function ServerSideRender( props ) {
-	const prevHTMLtRef = useRef( '' );
+	const prevContentRef = useRef( '' );
 	const {
 		className,
 		EmptyResponsePlaceholder = DefaultEmptyResponsePlaceholder,
@@ -79,28 +79,28 @@ export function ServerSideRender( props ) {
 		...restProps
 	} = props;
 
-	const { html, status, error } = useServerSideRender( restProps );
+	const { content, status, error } = useServerSideRender( restProps );
 
 	// Store the previous successful HTML response to show while loading.
 	useEffect( () => {
-		if ( html ) {
-			prevHTMLtRef.current = html;
+		if ( content ) {
+			prevContentRef.current = content;
 		}
-	}, [ html ] );
+	}, [ content ] );
 
 	if ( status === 'loading' ) {
 		return (
 			<LoadingResponsePlaceholder { ...props }>
-				{ !! prevHTMLtRef.current && (
+				{ !! prevContentRef.current && (
 					<RawHTML className={ className }>
-						{ prevHTMLtRef.current }
+						{ prevContentRef.current }
 					</RawHTML>
 				) }
 			</LoadingResponsePlaceholder>
 		);
 	}
 
-	if ( status === 'success' && ! html ) {
+	if ( status === 'success' && ! content ) {
 		return <EmptyResponsePlaceholder { ...props } />;
 	}
 
@@ -108,7 +108,7 @@ export function ServerSideRender( props ) {
 		return <ErrorResponsePlaceholder message={ error } { ...props } />;
 	}
 
-	return <RawHTML className={ className }>{ html }</RawHTML>;
+	return <RawHTML className={ className }>{ content }</RawHTML>;
 }
 
 /**

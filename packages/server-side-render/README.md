@@ -93,7 +93,7 @@ import { RawHTML } from '@wordpress/element';
 import { useServerSideRender } from '@wordpress/server-side-render';
 
 function MyServerSideRender( { attributes, block } ) {
-	const { status, html, error } = useServerSideRender( {
+	const { content, status, error } = useServerSideRender( {
 		attributes,
 		block,
 	} );
@@ -106,7 +106,7 @@ function MyServerSideRender( { attributes, block } ) {
 		return <div>Error: { error }</div>;
 	}
 
-	return <RawHTML>{ html }</RawHTML>;
+	return <RawHTML>{ content }</RawHTML>;
 }
 ```
 

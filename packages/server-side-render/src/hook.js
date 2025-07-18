@@ -38,9 +38,9 @@ export function removeBlockSupportAttributes( attributes ) {
 
 /**
  * @typedef {Object} ServerSideRenderResponse
- * @property {string} status  - The current request status: 'idle', 'loading', 'success', or 'error'.
- * @property {string} [html]  - The rendered HTML content (available when status is 'success').
- * @property {string} [error] - The error message (available when status is 'error').
+ * @property {string} status    - The current request status: 'idle', 'loading', 'success', or 'error'.
+ * @property {string} [content] - The rendered block content (available when status is 'success').
+ * @property {string} [error]   - The error message (available when status is 'error').
  */
 
 /**
@@ -58,7 +58,7 @@ export function removeBlockSupportAttributes( attributes ) {
  * import { useServerSideRender } from '@wordpress/server-side-render';
  *
  * function MyServerSideRender( { attributes, block } ) {
- *   const { status, html, error } = useServerSideRender( {
+ *   const { content, status, error } = useServerSideRender( {
  *     attributes,
  *     block,
  *   } );
@@ -71,7 +71,7 @@ export function removeBlockSupportAttributes( attributes ) {
  *     return <div>Error: { error }</div>;
  *   }
  *
- *   return <RawHTML>{ html }</RawHTML>;
+ *   return <RawHTML>{ content }</RawHTML>;
  * }
  * ```
  *
@@ -135,7 +135,7 @@ export function useServerSideRender( args ) {
 						.then( ( res ) => {
 							setResponse( {
 								status: 'success',
-								html: res ? res.rendered : '',
+								content: res ? res.rendered : '',
 							} );
 						} )
 						.catch( ( error ) => {
