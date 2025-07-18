@@ -98,10 +98,17 @@ export function filterSortAndPaginate< Item >(
 		filteredData = filteredData.filter( ( item ) => {
 			return _fields
 				.filter( ( field ) => field.enableGlobalSearch )
-				.map( ( field ) => {
-					return normalizeSearchInput( field.getValue( { item } ) );
-				} )
-				.some( ( field ) => field.includes( normalizedSearch ) );
+				.some( ( field ) => {
+					const fieldValue = field.getValue( { item } );
+					const values = Array.isArray( fieldValue )
+						? fieldValue
+						: [ fieldValue ];
+					return values.some( ( value ) =>
+						normalizeSearchInput( String( value ) ).includes(
+							normalizedSearch
+						)
+					);
+				} );
 		} );
 	}
 

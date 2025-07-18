@@ -71,6 +71,54 @@ describe( 'filters', () => {
 		expect( result[ 0 ].description ).toBe( 'La planète Vénus' );
 	} );
 
+	it( 'should search over array fields when enableGlobalSearch is true', () => {
+		const fieldsWithArraySearch = fields.map( ( field ) =>
+			field.id === 'categories'
+				? { ...field, enableGlobalSearch: true }
+				: field
+		);
+
+		const { data: result } = filterSortAndPaginate(
+			data,
+			{
+				search: 'NASA',
+				filters: [],
+			},
+			fieldsWithArraySearch
+		);
+
+		// Should find both items: one with title "NASA" and one with "NASA" in categories
+		expect( result ).toHaveLength( 2 );
+		expect( result.map( ( r ) => r.title ).sort() ).toEqual( [
+			'Apollo',
+			'NASA',
+		] );
+	} );
+
+	it( 'should search over array fields case-insensitively', () => {
+		const fieldsWithArraySearch = fields.map( ( field ) =>
+			field.id === 'categories'
+				? { ...field, enableGlobalSearch: true }
+				: field
+		);
+
+		const { data: result } = filterSortAndPaginate(
+			data,
+			{
+				search: 'space',
+				filters: [],
+			},
+			fieldsWithArraySearch
+		);
+
+		// Should find items with "Space" in categories (case-insensitive)
+		// Plus the item with title "Space" (from title search which is already enabled)
+		expect( result ).toHaveLength( 10 );
+		expect( result.map( ( r ) => r.title ) ).toContain( 'Apollo' );
+		expect( result.map( ( r ) => r.title ) ).toContain( 'Neptune' );
+		expect( result.map( ( r ) => r.title ) ).toContain( 'Space' );
+	} );
+
 	it( 'should search using IS filter', () => {
 		const { data: result } = filterSortAndPaginate(
 			data,
