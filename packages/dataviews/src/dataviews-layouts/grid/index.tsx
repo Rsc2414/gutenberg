@@ -299,140 +299,131 @@ function ViewGrid< Item >( {
 		: null;
 
 	// Group data by groupByField if specified
-	const groupedData = view.groupByField
+	const dataByGroup = groupField
 		? data.reduce( ( groups: { [ key: string ]: typeof data }, item ) => {
-				const groupValue = groupField?.getValue
-					? groupField.getValue( { item } )
-					: ( item as any )[ view.groupByField! ];
-				const key = String( groupValue ?? __( 'No group' ) );
-				if ( ! groups[ key ] ) {
-					groups[ key ] = [];
+				const groupName = groupField.getValue( { item } );
+				if ( ! groups[ groupName ] ) {
+					groups[ groupName ] = [];
 				}
-				groups[ key ].push( item );
+				groups[ groupName ].push( item );
 				return groups;
 		  }, {} )
 		: null;
 
 	return (
 		<>
-			{ hasData && (
-				<>
-					{ groupedData ? (
-						<VStack spacing={ 4 }>
-							{ Object.entries( groupedData ).map(
-								( [ groupName, groupItems ] ) => (
-									<VStack key={ groupName } spacing={ 2 }>
-										<h3 className="dataviews-view-grid__group-header">
-											{ groupField?.label }: { groupName }
-										</h3>
-										<Grid
-											gap={ 8 }
-											columns={ 2 }
-											alignment="top"
-											className={ clsx(
-												'dataviews-view-grid',
-												className
-											) }
-											style={ gridStyle }
-											aria-busy={ isLoading }
-										>
-											{ groupItems.map( ( item ) => {
-												return (
-													<GridItem
-														key={ getItemId(
-															item
-														) }
-														view={ view }
-														selection={ selection }
-														onChangeSelection={
-															onChangeSelection
-														}
-														onClickItem={
-															onClickItem
-														}
-														isItemClickable={
-															isItemClickable
-														}
-														renderItemLink={
-															renderItemLink
-														}
-														getItemId={ getItemId }
-														item={ item }
-														actions={ actions }
-														mediaField={
-															mediaField
-														}
-														titleField={
-															titleField
-														}
-														descriptionField={
-															descriptionField
-														}
-														regularFields={
-															regularFields
-														}
-														badgeFields={
-															badgeFields
-														}
-														hasBulkActions={
-															hasBulkActions
-														}
-													/>
-												);
-											} ) }
-										</Grid>
-									</VStack>
-								)
-							) }
-						</VStack>
-					) : (
-						<Grid
-							gap={ 8 }
-							columns={ 2 }
-							alignment="top"
-							className={ clsx(
-								'dataviews-view-grid',
-								className
-							) }
-							style={ gridStyle }
-							aria-busy={ isLoading }
-						>
-							{ data.map( ( item ) => {
-								return (
-									<GridItem
-										key={ getItemId( item ) }
-										view={ view }
-										selection={ selection }
-										onChangeSelection={ onChangeSelection }
-										onClickItem={ onClickItem }
-										isItemClickable={ isItemClickable }
-										renderItemLink={ renderItemLink }
-										getItemId={ getItemId }
-										item={ item }
-										actions={ actions }
-										mediaField={ mediaField }
-										titleField={ titleField }
-										descriptionField={ descriptionField }
-										regularFields={ regularFields }
-										badgeFields={ badgeFields }
-										hasBulkActions={ hasBulkActions }
-									/>
-								);
-							} ) }
-						</Grid>
-					) }
-				</>
-			) }
-			{ ! hasData && (
-				<div
-					className={ clsx( {
-						'dataviews-loading': isLoading,
-						'dataviews-no-results': ! isLoading,
-					} ) }
-				>
-					<p>{ isLoading ? <Spinner /> : __( 'No results' ) }</p>
-				</div>
-			) }
+			{
+				// Render multiple groups.
+				hasData && dataByGroup && (
+					<VStack spacing={ 4 }>
+						{ Object.entries( dataByGroup ).map(
+							( [ groupName, groupItems ] ) => (
+								<VStack key={ groupName } spacing={ 2 }>
+									<h3 className="dataviews-view-grid__group-header">
+										{ groupField?.label }: { groupName }
+									</h3>
+									<Grid
+										gap={ 8 }
+										columns={ 2 }
+										alignment="top"
+										className={ clsx(
+											'dataviews-view-grid',
+											className
+										) }
+										style={ gridStyle }
+										aria-busy={ isLoading }
+									>
+										{ groupItems.map( ( item ) => {
+											return (
+												<GridItem
+													key={ getItemId( item ) }
+													view={ view }
+													selection={ selection }
+													onChangeSelection={
+														onChangeSelection
+													}
+													onClickItem={ onClickItem }
+													isItemClickable={
+														isItemClickable
+													}
+													renderItemLink={
+														renderItemLink
+													}
+													getItemId={ getItemId }
+													item={ item }
+													actions={ actions }
+													mediaField={ mediaField }
+													titleField={ titleField }
+													descriptionField={
+														descriptionField
+													}
+													regularFields={
+														regularFields
+													}
+													badgeFields={ badgeFields }
+													hasBulkActions={
+														hasBulkActions
+													}
+												/>
+											);
+										} ) }
+									</Grid>
+								</VStack>
+							)
+						) }
+					</VStack>
+				)
+			}
+
+			{
+				// Render a single grid with all data.
+				hasData && ! dataByGroup && (
+					<Grid
+						gap={ 8 }
+						columns={ 2 }
+						alignment="top"
+						className={ clsx( 'dataviews-view-grid', className ) }
+						style={ gridStyle }
+						aria-busy={ isLoading }
+					>
+						{ data.map( ( item ) => {
+							return (
+								<GridItem
+									key={ getItemId( item ) }
+									view={ view }
+									selection={ selection }
+									onChangeSelection={ onChangeSelection }
+									onClickItem={ onClickItem }
+									isItemClickable={ isItemClickable }
+									renderItemLink={ renderItemLink }
+									getItemId={ getItemId }
+									item={ item }
+									actions={ actions }
+									mediaField={ mediaField }
+									titleField={ titleField }
+									descriptionField={ descriptionField }
+									regularFields={ regularFields }
+									badgeFields={ badgeFields }
+									hasBulkActions={ hasBulkActions }
+								/>
+							);
+						} ) }
+					</Grid>
+				)
+			}
+			{
+				// Render empty state.
+				! hasData && (
+					<div
+						className={ clsx( {
+							'dataviews-loading': isLoading,
+							'dataviews-no-results': ! isLoading,
+						} ) }
+					>
+						<p>{ isLoading ? <Spinner /> : __( 'No results' ) }</p>
+					</div>
+				)
+			}
 		</>
 	);
 }
